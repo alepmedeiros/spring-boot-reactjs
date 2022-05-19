@@ -8,7 +8,7 @@ import com.alemedeiros.finances.model.entity.Lancamentos;
 import com.alemedeiros.finances.model.enums.StatusLancamento;
 import com.alemedeiros.finances.model.enums.TipoLancamento;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -35,7 +35,7 @@ public class LancamentoRepositoryTes {
         
         lancamento = repository.save(lancamento);
 
-        Assertions.assertThat(lancamento.getId()).isNotNull();
+        assertThat(lancamento.getId()).isNotNull();
     }
 
     
@@ -50,7 +50,7 @@ public class LancamentoRepositoryTes {
         
         Lancamentos lancamentoInexistente = entityManager.find(Lancamentos.class, lancamento.getId());
 
-        Assertions.assertThat(lancamentoInexistente).isNull();
+        assertThat(lancamentoInexistente).isNull();
     }
     
     
@@ -66,9 +66,9 @@ public class LancamentoRepositoryTes {
 
         Lancamentos lancamentoAtualizado = entityManager.find(Lancamentos.class, lancamento.getId());
 
-        Assertions.assertThat(lancamentoAtualizado.getAno()).isEqualTo(2023);
-        Assertions.assertThat(lancamentoAtualizado.getDescricao()).isEqualTo("Teste de atualizacao");
-        Assertions.assertThat(lancamentoAtualizado.getStatus()).isEqualTo(StatusLancamento.CANCELADO);
+        assertThat(lancamentoAtualizado.getAno()).isEqualTo(2023);
+        assertThat(lancamentoAtualizado.getDescricao()).isEqualTo("Teste de atualizacao");
+        assertThat(lancamentoAtualizado.getStatus()).isEqualTo(StatusLancamento.CANCELADO);
     }
     
     @Test
@@ -77,7 +77,7 @@ public class LancamentoRepositoryTes {
 
         Optional<Lancamentos> lancamentoEncontrado = repository.findById(lancamento.getId());
 
-        Assertions.assertThat(lancamentoEncontrado.isPresent()).isTrue();
+        assertThat(lancamentoEncontrado.isPresent()).isTrue();
     }
 
     private Lancamentos criarEPersistirLancamento() {
