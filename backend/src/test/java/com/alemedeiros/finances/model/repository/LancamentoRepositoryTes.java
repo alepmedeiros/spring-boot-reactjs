@@ -37,6 +37,45 @@ public class LancamentoRepositoryTes {
         Assertions.assertThat(lancamento.getId()).isNotNull();
     }
 
+    
+    @Test
+    void deveDeletarUmLancamento(){
+        Lancamentos lancamento = criarEPersistirLancamento();
+
+        lancamento = entityManager.find(Lancamentos.class, lancamento.getId());
+
+
+        repository.delete(lancamento);
+        
+        Lancamentos lancamentoInexistente = entityManager.find(Lancamentos.class, lancamento.getId());
+
+        Assertions.assertThat(lancamentoInexistente).isNull();
+    }
+    
+    
+    @Test
+    void deveAtualiarUmLancamento(){
+        Lancamentos lancamento = criarEPersistirLancamento();
+
+        lancamento.setAno(2023);
+        lancamento.setDescricao("Teste de atualizacao");
+        lancamento.setStatus(StatusLancamento.CANCELADO);
+
+        repository.save(lancamento);
+
+        Lancamentos lancamentoAtualizado = entityManager.find(Lancamentos.class, lancamento.getId());
+
+        Assertions.assertThat(lancamentoAtualizado.getAno()).isEqualTo(2023);
+        Assertions.assertThat(lancamentoAtualizado.getDescricao()).isEqualTo("Teste de atualizacao");
+        Assertions.assertThat(lancamentoAtualizado.getStatus()).isEqualTo(StatusLancamento.CANCELADO);
+    }
+    
+    private Lancamentos criarEPersistirLancamento() {
+        Lancamentos lancamento = criarLancamento();
+        entityManager.persist(lancamento);
+        return lancamento;
+    }
+
     private Lancamentos criarLancamento() {
         Lancamentos lancamento = Lancamentos.builder()
                             .ano(2022)
@@ -48,20 +87,5 @@ public class LancamentoRepositoryTes {
                             .dataCadastro(LocalDate.now())
                             .build();
         return lancamento;
-    }
-
-    @Test
-    void deveDeletarUmLancamento(){
-        Lancamentos lancamento = criarLancamento();
-        entityManager.persist(lancamento);
-
-        lancamento = entityManager.find(Lancamentos.class, lancamento.getId());
-
-
-        repository.delete(lancamento);
-
-        Lancamentos lancamentoInexistente = entityManager.find(Lancamentos.class, lancamento.getId());
-
-        Assertions.assertThat(lancamentoInexistente).isNull();
     }
 }
