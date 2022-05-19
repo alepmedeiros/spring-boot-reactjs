@@ -2,6 +2,7 @@ package com.alemedeiros.finances.model.repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import com.alemedeiros.finances.model.entity.Lancamentos;
 import com.alemedeiros.finances.model.enums.StatusLancamento;
@@ -70,6 +71,15 @@ public class LancamentoRepositoryTes {
         Assertions.assertThat(lancamentoAtualizado.getStatus()).isEqualTo(StatusLancamento.CANCELADO);
     }
     
+    @Test
+    void deveBuscarUmLancamentoPorId(){
+        Lancamentos lancamento = criarEPersistirLancamento();
+
+        Optional<Lancamentos> lancamentoEncontrado = repository.findById(lancamento.getId());
+
+        Assertions.assertThat(lancamentoEncontrado.isPresent()).isTrue();
+    }
+
     private Lancamentos criarEPersistirLancamento() {
         Lancamentos lancamento = criarLancamento();
         entityManager.persist(lancamento);
