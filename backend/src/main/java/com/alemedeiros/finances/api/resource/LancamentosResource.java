@@ -39,18 +39,18 @@ public class LancamentosResource {
 
 
     @PostMapping
-    public ResponseEntity salvar(@RequestBody LancamentoDTO dto){
+    public ResponseEntity<?> salvar(@RequestBody LancamentoDTO dto){
         try {
             Lancamentos entidade = converter(dto);
             entidade = service.salvar(entidade);
-            return new ResponseEntity(entidade, HttpStatus.CREATED);
+            return new ResponseEntity<>(entidade, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody LancamentoDTO dto) {
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody LancamentoDTO dto) {
         return service.obterPorId(id).map(entity -> {
             try {
                     Lancamentos lancamentos = converter(dto);
@@ -60,37 +60,39 @@ public class LancamentosResource {
             } catch (RegraNegocioException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
-        }).orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base", HttpStatus.BAD_REQUEST));
+        }).orElseGet(() -> new ResponseEntity<>("Lançamento não encontrado na base", HttpStatus.BAD_REQUEST));
     }   
 
     @PutMapping("{id}/atualizar-status")
-    public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto){
+    public ResponseEntity<?> atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto){
         return service.obterPorId(id).map(entity -> {
             StatusLancamento statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
+
             if (statusSelecionado == null) {
                 return ResponseEntity.badRequest().body("Não foi possivel atualizar o status do lançamento, envie um status valido");
             }
 
             try {
                 entity.setStatus(statusSelecionado);
-                service.atualizar(entity)
+                service.atualizar(entity);
                 return ResponseEntity.ok(entity);
             } catch (RegraNegocioException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
-        }).orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base", HttpStatus.BAD_REQUEST));
+            
+        }).orElseGet(() -> new ResponseEntity<>("Lançamento não encontrado na base", HttpStatus.BAD_REQUEST));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity apagar(@PathVariable("id") Long id) {
+    public ResponseEntity<?> apagar(@PathVariable("id") Long id) {
         return service.obterPorId(id).map(entidade -> {
             service.deletar(entidade);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        }).orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }).orElseGet(() -> new ResponseEntity<>("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping
-    public ResponseEntity buscar(
+    public ResponseEntity<?> buscar(
             @RequestParam(value = "descricao", required = false) String descricao,
             @RequestParam(value = "mes", required = false) Integer mes,
             @RequestParam(value = "ano", required = false) Integer ano,

@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.alemedeiros.finances.exception.RegraNegocioException;
 import com.alemedeiros.finances.model.entity.Lancamentos;
 import com.alemedeiros.finances.model.enums.StatusLancamento;
+import com.alemedeiros.finances.model.enums.TipoLancamento;
 import com.alemedeiros.finances.model.repository.LancamentoRepository;
 import com.alemedeiros.finances.services.LancamentoService;
 
@@ -41,7 +42,6 @@ public class LancamentosServiceImpl implements LancamentoService{
     public Lancamentos atualizar(Lancamentos lancamentos) {
         Objects.requireNonNull(lancamentos.getId());
         validar(lancamentos);
-        lancamentos.setStatus(StatusLancamento.PENDENTE);
         return repository.save(lancamentos);
     }
 
@@ -99,6 +99,24 @@ public class LancamentosServiceImpl implements LancamentoService{
     @Override
     public Optional<Lancamentos> obterPorId(Long id) {
         return repository.findById(id);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal obterSaldoPorUsuario(Long id) {
+        BigDecimal receitas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.RECEITA);
+        BigDecimal despesas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.DESPESA);
+
+        if (receitas == null) {
+            receitas = BigDecimal.ZERO;
+        }
+
+        if (despesas == null) {
+            despesas = BigDecimal.ZERO;
+        }
+
+        return receitas.subtract(despesas);
     }
     
 }
