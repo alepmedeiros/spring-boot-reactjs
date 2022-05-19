@@ -6,7 +6,6 @@ import com.alemedeiros.finances.exception.RegraNegocioException;
 import com.alemedeiros.finances.model.entity.Usuario;
 import com.alemedeiros.finances.services.UsuarioService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,17 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/v1/usuarios")
+@RequiredArgsConstructor
 public class UsuarioResource {
  
-    @Autowired
-    private UsuarioService service;
-
-
-    public UsuarioResource(UsuarioService service) {
-        this.service = service;
-    }
+    private final UsuarioService service;
 
     @PostMapping("/autenticar")
     public ResponseEntity autenticar(@RequestBody UsuarioDTO dto){

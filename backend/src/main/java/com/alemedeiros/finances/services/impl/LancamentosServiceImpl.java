@@ -3,6 +3,7 @@ package com.alemedeiros.finances.services.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.alemedeiros.finances.exception.RegraNegocioException;
 import com.alemedeiros.finances.model.entity.Lancamentos;
@@ -31,6 +32,7 @@ public class LancamentosServiceImpl implements LancamentoService{
     @Transactional
     public Lancamentos salvar(Lancamentos lancamentos) {
         validar(lancamentos);
+        lancamentos.setStatus(StatusLancamento.PENDENTE);
         return repository.save(lancamentos);
     }
 
@@ -91,6 +93,12 @@ public class LancamentosServiceImpl implements LancamentoService{
         if(lancamentos.getTipo() == null) {
             throw new RegraNegocioException("Informe um tipo de Lançamento");
         }
+    }
+
+
+    @Override
+    public Optional<Lancamentos> obterPorId(Long id) {
+        return repository.findById(id);
     }
     
 }
