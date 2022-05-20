@@ -2,20 +2,16 @@ package com.alemedeiros.finances.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.Executable;
 import java.util.Optional;
 
 import com.alemedeiros.finances.exception.ErrorAutenticacao;
 import com.alemedeiros.finances.exception.RegraNegocioException;
 import com.alemedeiros.finances.model.entity.Usuario;
 import com.alemedeiros.finances.model.repository.UsuarioRepository;
-import com.alemedeiros.finances.services.UsuarioService;
 import com.alemedeiros.finances.services.impl.UsuarioServiceImpl;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
