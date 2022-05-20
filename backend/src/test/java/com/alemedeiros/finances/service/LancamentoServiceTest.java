@@ -8,11 +8,16 @@ import com.alemedeiros.finances.model.repository.LancamentoRepositoryTest;
 import com.alemedeiros.finances.services.impl.LancamentosServiceImpl;
 
 import static org.assertj.core.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.Example;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -108,6 +113,23 @@ public class LancamentoServiceTest {
 
         //verificacao
         Mockito.verify(repository, Mockito.never()).delete(lancamento);
+    }
+
+    @Test
+    void deveFiltrarLancamentos(){
+        //cenario
+        Lancamentos lancamento = LancamentoRepositoryTest.criarLancamento();
+        lancamento.setId(1l);
+
+        List<Lancamentos> lista = Arrays.asList(lancamento);
+        Mockito.when(repository.findAll(Mockito.any(Example.class))).thenReturn(lista);
+
+        //execucao
+        List<Lancamentos> resultado = service.buscar(lancamento);
+
+        //verificacao
+        assertThat(resultado).isNotEmpty().hasSize(1).contains(lancamento);
+
     }
 
 }
