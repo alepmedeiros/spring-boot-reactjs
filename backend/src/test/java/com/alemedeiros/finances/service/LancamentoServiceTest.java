@@ -1,5 +1,6 @@
 package com.alemedeiros.finances.service;
 
+import com.alemedeiros.finances.exception.RegraNegocioException;
 import com.alemedeiros.finances.model.entity.Lancamentos;
 import com.alemedeiros.finances.model.enums.StatusLancamento;
 import com.alemedeiros.finances.model.repository.LancamentoRepository;
@@ -26,11 +27,6 @@ public class LancamentoServiceTest {
 
     @Test
     void deveSalvarUmLancamento(){
-
-    }
-
-    @Test
-    void naoDeveSalvarUmLancamentoQuandoHouverErroDeValidacao(){
         //cenario
         Lancamentos lancamentoSalvar = LancamentoRepositoryTest.criarLancamento();
         Mockito.doNothing().when(service).validar(lancamentoSalvar);
@@ -46,5 +42,17 @@ public class LancamentoServiceTest {
         //verificacao
         assertThat(lancamento.getId()).isEqualTo(lancamentoSalvo.getId());
         assertThat(lancamento.getStatus()).isEqualTo(StatusLancamento.PENDENTE);
+    }
+
+    @Test
+    void naoDeveSalvarUmLancamentoQuandoHouverErroDeValidacao(){
+        //cenario
+        Lancamentos lancamentoSalvar = LancamentoRepositoryTest.criarLancamento();
+        Mockito.doThrow(RegraNegocioException.class).when(service).validar(lancamentoSalvar);
+
+        //execucao 
+        //verificacao
+        catchThrowableOfType(() -> service.salvar(lancamentoSalvar), RegraNegocioException.class);
+        Mockito.verify(repository, Mockito.never()).save(lancamentoSalvar);
     }
 }
