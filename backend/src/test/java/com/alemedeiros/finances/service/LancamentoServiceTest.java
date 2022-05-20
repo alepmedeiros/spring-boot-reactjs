@@ -74,4 +74,40 @@ public class LancamentoServiceTest {
         Mockito.verify(repository, Mockito.times(1)).save(lancamentoSalvo);
     }
 
+    @Test
+    void deveLancarErroAoAtualiziarLancamentoInexistente(){
+        //cenario
+        Lancamentos lancamento = LancamentoRepositoryTest.criarLancamento();
+      
+        //execucao 
+        //verificacao
+        catchThrowableOfType(() -> service.atualizar(lancamento), NullPointerException.class);
+        Mockito.verify(repository, Mockito.never()).save(lancamento);
+    }
+
+    @Test
+    void deveApagarLancamento(){
+        //cenario
+        Lancamentos lancamento = LancamentoRepositoryTest.criarLancamento();
+        lancamento.setId(1l);
+
+        //execucao
+        service.deletar(lancamento);
+
+        //verificacao
+        Mockito.verify(repository).delete(lancamento);
+    }
+
+    @Test
+    void deveLancarErroAoApagarLancamentoInexistente(){
+        //cenario
+        Lancamentos lancamento = LancamentoRepositoryTest.criarLancamento();
+
+        //execucao
+        catchThrowableOfType(() -> service.deletar(lancamento), NullPointerException.class);
+
+        //verificacao
+        Mockito.verify(repository, Mockito.never()).delete(lancamento);
+    }
+
 }

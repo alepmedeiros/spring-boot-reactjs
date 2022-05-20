@@ -29,3 +29,7 @@
 - spy para teste do usuario
 - finalizando testes de services usuario
 - implementando a camada de controller
+- implmentando o service de lancamentos
+- implementando os resources lancamentos
+
+- aplicando TDD para o lancamento
