@@ -34,4 +34,8 @@
 
 - aplicando TDD para o lancamento
 
--aplicanto testes na api
+- aplicanto testes na api
+
+===========================================================
+
+- Criando o frontEnd
