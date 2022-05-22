@@ -3,6 +3,7 @@ package com.alemedeiros.finances.resource;
 import com.alemedeiros.finances.api.dto.UsuarioDTO;
 import com.alemedeiros.finances.api.resource.UsuarioResource;
 import com.alemedeiros.finances.exception.ErrorAutenticacao;
+import com.alemedeiros.finances.exception.RegraNegocioException;
 import com.alemedeiros.finances.model.entity.Usuario;
 import com.alemedeiros.finances.services.LancamentoService;
 import com.alemedeiros.finances.services.UsuarioService;
@@ -13,7 +14,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -51,6 +51,7 @@ public class UsuarioResourceTest {
                     .build();
 
         Usuario usuario = Usuario.builder()
+                    .id(1l)
                     .email(email)
                     .senha(senha)
                     .build(); 
@@ -132,5 +133,31 @@ public class UsuarioResourceTest {
             .andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getId()))
             .andExpect(MockMvcResultMatchers.jsonPath("nome").value(usuario.getNome()))
             .andExpect(MockMvcResultMatchers.jsonPath("email").value(usuario.getEmail()));
+    }
+
+    @Test
+    void deveRetornarErroAoCriarNovoUsuario() throws Exception {
+        //cenario
+        String email = "email@email.com";
+        String senha = "senha";
+
+        UsuarioDTO usuarioDTO = UsuarioDTO.builder()
+                    .email(email)
+                    .senha(senha)    
+                    .build(); 
+
+        Mockito.when(service.salvarUsuario(Mockito.any(Usuario.class))).thenThrow(RegraNegocioException.class);
+
+        String json = new ObjectMapper().writeValueAsString(usuarioDTO);
+
+        //execucao
+        //verificacao
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                                                .post(API)
+                                                .accept(JSON)
+                                                .contentType(JSON)
+                                                .content(json);
+        mvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 }
