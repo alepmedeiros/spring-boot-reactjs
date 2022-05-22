@@ -20,7 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @ActiveProfiles("test")
-public class LancamentoRepositoryTes {
+public class LancamentoRepositoryTest {
     
 
     @Autowired
@@ -86,7 +86,7 @@ public class LancamentoRepositoryTes {
         return lancamento;
     }
 
-    private Lancamentos criarLancamento() {
+    public static Lancamentos criarLancamento() {
         Lancamentos lancamento = Lancamentos.builder()
                             .ano(2022)
                             .mes(5)
