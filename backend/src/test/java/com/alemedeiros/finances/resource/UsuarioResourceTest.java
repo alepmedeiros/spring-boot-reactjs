@@ -2,6 +2,7 @@ package com.alemedeiros.finances.resource;
 
 import com.alemedeiros.finances.api.dto.UsuarioDTO;
 import com.alemedeiros.finances.api.resource.UsuarioResource;
+import com.alemedeiros.finances.exception.ErrorAutenticacao;
 import com.alemedeiros.finances.model.entity.Usuario;
 import com.alemedeiros.finances.services.LancamentoService;
 import com.alemedeiros.finances.services.UsuarioService;
@@ -70,6 +71,32 @@ public class UsuarioResourceTest {
             .andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getId()))
             .andExpect(MockMvcResultMatchers.jsonPath("nome").value(usuario.getNome()))
             .andExpect(MockMvcResultMatchers.jsonPath("email").value(usuario.getEmail()));
+    }
+
+    @Test
+    void deveObterErrroNaAutenticacao() throws Exception {
+        //cenario
+        String email = "email@email.com";
+        String senha = "senha";
+
+        UsuarioDTO usuarioDTO = UsuarioDTO.builder()
+                    .email(email)
+                    .senha(senha)    
+                    .build();
+
+        Mockito.when(service.autenticar(email, senha)).thenThrow(ErrorAutenticacao.class);
+
+        String json = new ObjectMapper().writeValueAsString(usuarioDTO);
+
+        //execucao
+        //verificacao
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                                                .post(API.concat("/autenticar"))
+                                                .accept(JSON)
+                                                .contentType(JSON)
+                                                .content(json);
+        mvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 }
