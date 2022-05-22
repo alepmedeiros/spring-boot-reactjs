@@ -33,3 +33,5 @@
 - implementando os resources lancamentos
 
 - aplicando TDD para o lancamento
+
+-aplicanto testes na api
