@@ -5,7 +5,7 @@ export const Button = (props) => {
     <>
         <button 
             className={`btn btn-${props.type}`} 
-            style={{marginTop: 10}}
+            style={{marginTop: 10, marginRight: 5}}
             onClick={props.click}
         >{props.label}</button>
     </>
