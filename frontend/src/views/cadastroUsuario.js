@@ -1,75 +1,72 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/button';
 import Card from '../components/card';
 import Form from '../components/form';
 
-export default class CadastroUsuario extends Component {
+const CadastroUsuario = () => {
+    const [nome, setNome] = useState();
+    const [email, setEmail] = useState();
+    const [senha, setSenha] = useState();
+    const [senhaRepeticao, setSenhaRepeticao] = useState();
 
-    state = {
-        nome:'',
-        email:'',
-        senha:'',
-        senhaRepeticao:''
+    let navigate = useNavigate();
+
+    const cancelar = () => {
+        navigate('/login');
     }
 
-    cadastrar = () => {
-        console.log(this.state);
-    }
-
-  render() {
     return (
-        <div className='container'>
-            <Card title='Cadastro de Usuário'>
-                <div className="row">
-                    <div className="col-lg-12">
-                        <div className="bs-component">
-                            <Form 
-                                id='nome'
-                                label='Nome: *'
-                                placeholder='Digite seu nome'
-                                type='text'
-                                value={this.state.nome}
-                                change={e => this.setState({nome: e.target.value})}
-                            />
-                            <Form 
-                                id='email'
-                                label='E-mail: *'
-                                placeholder='Digite o seu email'
-                                type='email'
-                                value={this.state.email}
-                                change={e => this.setState({email: e.target.value})}
-                            />
-                            <Form 
-                                id='senha'
-                                label='Senha: *'
-                                placeholder='Digite sua senha'
-                                type='password'
-                                value={this.state.senha}
-                                change={e => this.setState({senha: e.target.value})}
-                            />
-                            <Form 
-                                id='senharepeticao'
-                                label='Repetir a senha: *'
-                                placeholder='Digite novamente sua senha'
-                                type='password'
-                                value={this.state.senhaRepeticao}
-                                change={e => this.setState({senhaRepeticao: e.target.value})}
-                            />
-                            <Button 
-                                type='success'
-                                label='Salvar'
-                                click={this.cadastrar}
-                            />
-                            <Button 
-                                type='danger'
-                                label='Cancelar'
-                            />
-                        </div>
+        <Card title='Cadastro de Usuário'>
+            <div className="row">
+                <div className="col-lg-12">
+                    <div className="bs-component">
+                        <Form 
+                            id='nome'
+                            label='Nome: *'
+                            placeholder='Digite seu nome'
+                            type='text'
+                            value={nome}
+                            change={e =>setNome(e.target.value)}
+                        />
+                        <Form 
+                            id='email'
+                            label='E-mail: *'
+                            placeholder='Digite o seu email'
+                            type='email'
+                            value={email}
+                            change={e => setEmail(e.target.value)}
+                        />
+                        <Form 
+                            id='senha'
+                            label='Senha: *'
+                            placeholder='Digite sua senha'
+                            type='password'
+                            value={senha}
+                            change={e => setSenha(e.target.value)}
+                        />
+                        <Form 
+                            id='senharepeticao'
+                            label='Repetir a senha: *'
+                            placeholder='Digite novamente sua senha'
+                            type='password'
+                            value={senhaRepeticao}
+                            change={e => setSenhaRepeticao(e.target.value)}
+                        />
+                        <Button 
+                            type='success'
+                            label='Salvar'
+                        />
+                        <Button 
+                            type='danger'
+                            label='Cancelar'
+                            click={cancelar}
+                        />
                     </div>
                 </div>
-            </Card>
-        </div>
+            </div>
+        </Card>
     )
-  }
 }
 
+export default CadastroUsuario;
