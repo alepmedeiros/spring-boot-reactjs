@@ -4,11 +4,24 @@ import { Button } from '../components/button';
 import Card from '../components/card';
 import Form from '../components/form';
 
+import axios from 'axios';
+
 const Login = () => {
     const [email, setEmail] = useState();
     const [senha, setSenha] = useState();
 
     let navigate = useNavigate();
+
+    const entrar = () => {
+        axios.post('http://localhost:8080/v1/usuarios/autenticar',{
+            email: email,
+            senha: senha
+        }).then(resp => {
+            console.log(resp);
+        }).catch(error => {
+            console.log(error.response);
+        });
+    }
 
     const cadastrarUsuario = () => {
         navigate('/cadastro-usuario');
@@ -25,7 +38,7 @@ const Login = () => {
                                 <Form 
                                     id='email'
                                     value={email}
-                                    change={e => setEmail(e.target.value)}
+                                    change={(e) => setEmail(e.target.value)}
                                     label='E-mail *'
                                     type='email'
                                     placeholder='Digite aqui o seu e-mail'
@@ -33,7 +46,7 @@ const Login = () => {
                                 <Form 
                                     id="password"
                                     value={senha}
-                                    change={e => setSenha(e.target.value)}
+                                    change={(e) => setSenha(e.target.value)}
                                     label='Senha *'
                                     type='password'
                                     placeholder='Digite aqui o sua senha'
@@ -41,6 +54,7 @@ const Login = () => {
                                 <Button 
                                     type='success'
                                     label='Entrar'
+                                    click={entrar}
                                 />
                                 <Button 
                                     type='danger'
