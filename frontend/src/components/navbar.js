@@ -16,7 +16,7 @@ export default function NavBar() {
               <div className="collapse navbar-collapse" id="navbarResponsive">
                   <ul className="navbar-nav">
                       <NavBarItem 
-                        link='/'
+                        link='/home'
                         label='Home'
                       />
                       <NavBarItem 
@@ -24,7 +24,7 @@ export default function NavBar() {
                         label='Usuários'
                       />
                       <NavBarItem 
-                        link='/lancamento'
+                        link='/consulta-lancamento'
                         label='Lançamentos'
                       />
                       <NavBarItem 

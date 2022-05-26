@@ -15,7 +15,7 @@
 	<version>0.0.1</version>
 	<name>finances</name>
 	<description>personal finance management project</description>
-	
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -73,6 +73,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

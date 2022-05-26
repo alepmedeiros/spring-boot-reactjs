@@ -3,23 +3,27 @@ import { useNavigate  } from 'react-router-dom';
 import { Button } from '../components/button';
 import Card from '../components/card';
 import Form from '../components/form';
-
-import axios from 'axios';
+import UsuarioServices from '../app/service/usuarioService';
+import LocalStorageservice from '../app/service/localStorageService';
+import { mensagemErro } from '../components/toastr';
 
 const Login = () => {
     const [email, setEmail] = useState();
     const [senha, setSenha] = useState();
 
+    const service = new UsuarioServices()
+
     let navigate = useNavigate();
 
     const entrar = () => {
-        axios.post('http://localhost:8080/v1/usuarios/autenticar',{
+        service.autenticar({
             email: email,
             senha: senha
         }).then(resp => {
-            console.log(resp);
-        }).catch(error => {
-            console.log(error.response);
+            LocalStorageservice.addItem('usuario_logado', resp.data);
+            navigate('/home');
+        }).catch(erro => {
+            mensagemErro(erro.response.data);
         });
     }
 
@@ -32,6 +36,7 @@ const Login = () => {
         <div className='col-md-6' style={ {position: 'relative', left: '300px', marginTop: 50} }>
             <div className='bs-docs-section'>
                 <Card title='Login'>
+                    
                     <div className='row'>
                         <div className='col-lg-12'> 
                             <div className='bs-component'>

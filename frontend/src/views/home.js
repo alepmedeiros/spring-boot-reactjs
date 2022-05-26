@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../components/button'
+import { Button } from '../components/button';
+import UsuarioService from '../app/service/usuarioService';
+import LocalStorageservice from '../app/service/localStorageService';
 
 const Home = () => {
     const [saldo, setSaldo] = useState(0);
     let navigate = useNavigate();
+
+    const service = new UsuarioService();
 
     const cadastrosUsuario = () => {
         navigate('/cadastro-usuario');
@@ -13,6 +17,19 @@ const Home = () => {
     const cadastroLancamento = () => {
         navigate('/cadastro-lancamento');
     }
+
+    const buscarSaldo = () => {
+        const loggedUser = LocalStorageservice.obtemItem('usuario_logado');
+        service.obterSaldoPorUsuario(loggedUser.id).then(resp => {
+                setSaldo(resp.data);
+            }).catch(erro => {
+                console.log(erro.response);
+            })
+    }
+
+    useEffect(() => {
+        buscarSaldo();
+    });
 
   return (
     <div className="jumbotron">
@@ -24,15 +41,15 @@ const Home = () => {
         <p className="lead">
         <Button 
             type='primary btn-lg'
-            ico='users'
             label='Cadastrar Usuário'
             click={cadastrosUsuario}
+            icon='users'
         />
         <Button 
             type='danger btn-lg'
-            ico='users'
             label='Cadastrar Lançamento'
             click={cadastroLancamento}
+            icon='users'
         />
         </p>
     </div>
