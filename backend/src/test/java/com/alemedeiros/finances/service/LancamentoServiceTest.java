@@ -4,7 +4,6 @@ import com.alemedeiros.finances.exception.RegraNegocioException;
 import com.alemedeiros.finances.model.entity.Lancamentos;
 import com.alemedeiros.finances.model.entity.Usuario;
 import com.alemedeiros.finances.model.enums.StatusLancamento;
-import com.alemedeiros.finances.model.enums.TipoLancamento;
 import com.alemedeiros.finances.model.repository.LancamentoRepository;
 import com.alemedeiros.finances.model.repository.LancamentoRepositoryTest;
 import com.alemedeiros.finances.services.impl.LancamentosServiceImpl;
