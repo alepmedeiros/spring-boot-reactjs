@@ -16,14 +16,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.mockito.Mockito.*;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
 @ActiveProfiles("test")
 public class LancamentoServiceTest {
     
@@ -37,12 +35,12 @@ public class LancamentoServiceTest {
     void deveSalvarUmLancamento(){
         //cenario
         Lancamentos lancamentoSalvar = LancamentoRepositoryTest.criarLancamento();
-        Mockito.doNothing().when(service).validar(lancamentoSalvar);
+        doNothing().when(service).validar(lancamentoSalvar);
 
         Lancamentos lancamentoSalvo = LancamentoRepositoryTest.criarLancamento();
         lancamentoSalvo.setId(1l);
         lancamentoSalvo.setStatus(StatusLancamento.PENDENTE);
-        Mockito.when(repository.save(lancamentoSalvar)).thenReturn(lancamentoSalvo);
+        when(repository.save(lancamentoSalvar)).thenReturn(lancamentoSalvo);
 
         //execucao
         Lancamentos lancamento = service.salvar(lancamentoSalvar);
@@ -56,12 +54,12 @@ public class LancamentoServiceTest {
     void naoDeveSalvarUmLancamentoQuandoHouverErroDeValidacao(){
         //cenario
         Lancamentos lancamentoSalvar = LancamentoRepositoryTest.criarLancamento();
-        Mockito.doThrow(RegraNegocioException.class).when(service).validar(lancamentoSalvar);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamentoSalvar);
 
         //execucao 
         //verificacao
         catchThrowableOfType(() -> service.salvar(lancamentoSalvar), RegraNegocioException.class);
-        Mockito.verify(repository, Mockito.never()).save(lancamentoSalvar);
+        verify(repository, never()).save(lancamentoSalvar);
     }
 
     @Test
@@ -71,15 +69,15 @@ public class LancamentoServiceTest {
         lancamentoSalvo.setId(1l);
         lancamentoSalvo.setStatus(StatusLancamento.PENDENTE);
 
-        Mockito.doNothing().when(service).validar(lancamentoSalvo);
+        doNothing().when(service).validar(lancamentoSalvo);
 
-        Mockito.when(repository.save(lancamentoSalvo)).thenReturn(lancamentoSalvo);
+        when(repository.save(lancamentoSalvo)).thenReturn(lancamentoSalvo);
 
         //execucao
         service.atualizar(lancamentoSalvo);
 
         //verificacao
-        Mockito.verify(repository, Mockito.times(1)).save(lancamentoSalvo);
+        verify(repository, times(1)).save(lancamentoSalvo);
     }
 
     @Test
@@ -90,7 +88,7 @@ public class LancamentoServiceTest {
         //execucao 
         //verificacao
         catchThrowableOfType(() -> service.atualizar(lancamento), NullPointerException.class);
-        Mockito.verify(repository, Mockito.never()).save(lancamento);
+        verify(repository, never()).save(lancamento);
     }
 
     @Test
@@ -103,7 +101,7 @@ public class LancamentoServiceTest {
         service.deletar(lancamento);
 
         //verificacao
-        Mockito.verify(repository).delete(lancamento);
+        verify(repository).delete(lancamento);
     }
 
     @Test
@@ -115,7 +113,7 @@ public class LancamentoServiceTest {
         catchThrowableOfType(() -> service.deletar(lancamento), NullPointerException.class);
 
         //verificacao
-        Mockito.verify(repository, Mockito.never()).delete(lancamento);
+        verify(repository, never()).delete(lancamento);
     }
 
     @Test
@@ -125,7 +123,7 @@ public class LancamentoServiceTest {
         lancamento.setId(1l);
 
         List<Lancamentos> lista = Arrays.asList(lancamento);
-        Mockito.when(repository.findAll(Mockito.any(Example.class))).thenReturn(lista);
+        when(repository.findAll(any(Example.class))).thenReturn(lista);
 
         //execucao
         List<Lancamentos> resultado = service.buscar(lancamento);
@@ -142,14 +140,14 @@ public class LancamentoServiceTest {
         lancamento.setId(1l);
 
         StatusLancamento novoStatus = StatusLancamento.EFETIVADO;
-        Mockito.doReturn(lancamento).when(service).atualizar(lancamento);
+        doReturn(lancamento).when(service).atualizar(lancamento);
 
         //execucao
         service.atualizarStatus(lancamento, novoStatus);
 
         //verificacao
         assertThat(lancamento.getStatus()).isEqualTo(novoStatus);
-        Mockito.verify(service).atualizar(lancamento);
+        verify(service).atualizar(lancamento);
     }
 
     @Test
@@ -160,7 +158,7 @@ public class LancamentoServiceTest {
         Lancamentos lancamento = LancamentoRepositoryTest.criarLancamento();
         lancamento.setId(id);
         
-        Mockito.when(repository.findById(id)).thenReturn(Optional.of(lancamento));
+        when(repository.findById(id)).thenReturn(Optional.of(lancamento));
 
         //execucao
         Optional<Lancamentos> resultado = service.obterPorId(id);
@@ -177,7 +175,7 @@ public class LancamentoServiceTest {
         Lancamentos lancamento = LancamentoRepositoryTest.criarLancamento();
         lancamento.setId(id);
         
-        Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
+        when(repository.findById(id)).thenReturn(Optional.empty());
 
         //execucao
         Optional<Lancamentos> resultado = service.obterPorId(id);
