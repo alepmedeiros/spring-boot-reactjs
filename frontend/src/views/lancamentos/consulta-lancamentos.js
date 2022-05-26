@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import { Dialog } from 'primereact/dialog';
+
 import Card from '../../components/card';
 import Form from '../../components/form';
 import SelectMenu from '../../components/selectMenu';
-import { Button } from '../../components/button';
+// import { Button } from '../../components/button';
+import { Button } from 'primereact/button';
 import LancamentosTable from './lancamentosTable';
 import LancamentoService from '../../app/service/lancamentoService';
 import LocalStorageservice from '../../app/service/localStorageService';
@@ -14,6 +17,8 @@ const ConsultaLancamentos = () => {
     const [tipo, setTipo] = useState();
     const [descricao, setDescricao] = useState();
     const [lancamentos, setLancamentos] = useState([]);
+    const [lancamentoExcluir, setLancamentoExcluir] = useState({});
+    const [display, setDisplay] = useState(false);
 
     const lancamentoService = new LancamentoService();
 
@@ -41,7 +46,6 @@ const ConsultaLancamentos = () => {
             })
     }
 
-
     const meses = lancamentoService.obterMeses();
 
     const tipos= lancamentoService.obterTipos();
@@ -50,18 +54,41 @@ const ConsultaLancamentos = () => {
         console.log('edit',id);
     }
 
-    const excluir = (lancamento) => {
-        lancamentoService.excluir(lancamento.id)
+    const excluir = () => {
+        lancamentoService.excluir(lancamentoExcluir.id)
             .then(resp => {
                 const lancamentosidx = lancamentos;
-                const index = lancamentosidx.indexOf(lancamento);
+                const index = lancamentosidx.indexOf(lancamentoExcluir);
                 lancamentosidx.splice(index, 1);
                 setLancamentos(lancamentosidx);
+
+                consultar();
 
                 messages.mensagemSucesso('Laçamento excluido com sucesso.');
             }).catch(error => {
                 messages.mensagemErro('Não foi possivel excluir o lançamento');
-            })
+            });
+            setDisplay(false);
+    }
+
+
+    const confirmeExclusao = (lancamento) => {
+        setDisplay(true);
+        setLancamentoExcluir(lancamento);
+    }
+
+    const cancelaExclusao = () => {
+        setDisplay(false);
+        setLancamentoExcluir({});
+    }
+
+    const renderFooter = (name) => {
+        return(
+            <div>
+                <Button label="Não" icon="pi pi-times" onClick={cancelaExclusao} className="p-button-text" />
+                <Button label="Sim" icon="pi pi-check" onClick={excluir} autoFocus />
+            </div>
+        );
     }
     
   return (
@@ -100,13 +127,15 @@ const ConsultaLancamentos = () => {
                         lista={tipos}
                     />
                     <Button 
-                        type='success'
                         label='Buscar'
-                        click={consultar}
+                        onClick={consultar}
+                        style={{marginTop: 5, marginRight: 5}}
+                        className='p-button-success'
                     />
                     <Button 
-                        type='danger'
                         label='Cadastra'
+                        style={{marginTop: 5, marginRight: 5}}
+                        className='p-button-danger'
                     />
                 </div>
             </div>
@@ -116,10 +145,20 @@ const ConsultaLancamentos = () => {
             <div className="col-lg-12">
                 <LancamentosTable 
                     lancamentos={lancamentos}
-                    deleteAction={excluir}
+                    deleteAction={confirmeExclusao}
                     editAction={editar}
                 />
             </div>
+        </div>
+        <div>
+            <Dialog 
+                header="Atençao" 
+                visible={display} 
+                style={{ width: '25vw' }} 
+                footer={renderFooter('display')} 
+                onHide={() => setDisplay(false)}>
+                <p>Confirma a exclusão deste lançamento?</p>
+            </Dialog>
         </div>
     </Card>
   )

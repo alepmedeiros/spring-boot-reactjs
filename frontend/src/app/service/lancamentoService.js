@@ -54,7 +54,6 @@ export default class LancamentoService extends ApiService {
         if(lancamentoFiltro.descricao){
             params = `${params}&descricao=${lancamentoFiltro.descricao}`;
         }
-        console.log(params);
         return this.get(params);
     }
 
