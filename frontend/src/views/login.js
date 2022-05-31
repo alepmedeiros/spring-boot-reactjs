@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate  } from 'react-router-dom';
-import { Button } from '../components/button';
+import { Button } from 'primereact/button';
 import Card from '../components/card';
 import Form from '../components/form';
 import UsuarioServices from '../app/service/usuarioService';
 import LocalStorageservice from '../app/service/localStorageService';
 import { mensagemErro } from '../components/toastr';
+import ProvedorAutenticacao from '../main/provedoreAutenticacao';
 
 const Login = () => {
     const [email, setEmail] = useState();
     const [senha, setSenha] = useState();
 
-    const service = new UsuarioServices()
+    const service = new UsuarioServices();
 
     let navigate = useNavigate();
 
@@ -43,7 +44,7 @@ const Login = () => {
                                 <Form 
                                     id='email'
                                     value={email}
-                                    change={(e) => setEmail(e.target.value)}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     label='E-mail *'
                                     type='email'
                                     placeholder='Digite aqui o seu e-mail'
@@ -51,20 +52,24 @@ const Login = () => {
                                 <Form 
                                     id="password"
                                     value={senha}
-                                    change={(e) => setSenha(e.target.value)}
+                                    onChange={(e) => setSenha(e.target.value)}
                                     label='Senha *'
                                     type='password'
                                     placeholder='Digite aqui o sua senha'
                                 />
                                 <Button 
-                                    type='success'
+                                    style={{marginTop: 5, marginRight: 5}}
+                                    className='p-button-success'
+                                    icon='pi pi-sign-in'
                                     label='Entrar'
-                                    click={entrar}
+                                    onClick={entrar}
                                 />
                                 <Button 
-                                    type='danger'
+                                    style={{marginTop: 5, marginRight: 5}}
+                                    className='p-button-secondary'
+                                    icon='pi pi-plus'
                                     label='Cadastrar'
-                                    click={cadastrarUsuario}
+                                    onClick={cadastrarUsuario}
                                 />                                       
                             </div>                                     
                         </div>

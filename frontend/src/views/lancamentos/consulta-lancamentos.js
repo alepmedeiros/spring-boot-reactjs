@@ -1,10 +1,10 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import { Dialog } from 'primereact/dialog';
+import { useNavigate } from 'react-router-dom';
 
 import Card from '../../components/card';
 import Form from '../../components/form';
 import SelectMenu from '../../components/selectMenu';
-// import { Button } from '../../components/button';
 import { Button } from 'primereact/button';
 import LancamentosTable from './lancamentosTable';
 import LancamentoService from '../../app/service/lancamentoService';
@@ -19,6 +19,8 @@ const ConsultaLancamentos = () => {
     const [lancamentos, setLancamentos] = useState([]);
     const [lancamentoExcluir, setLancamentoExcluir] = useState({});
     const [display, setDisplay] = useState(false);
+
+    const navigate = useNavigate();
 
     const lancamentoService = new LancamentoService();
 
@@ -40,7 +42,11 @@ const ConsultaLancamentos = () => {
         lancamentoService
             .consultar(lancamentoFiltro)
             .then(resp => {
-              setLancamentos(resp.data)  
+                const lista = resp.data; 
+                if (lista.length < 1) {
+                    messages.mensagemAlerta('Nenhum resultado encontrado');
+                }
+              setLancamentos(lista)  
             }).catch(error => {
                 console.log(error);
             })
@@ -51,7 +57,7 @@ const ConsultaLancamentos = () => {
     const tipos= lancamentoService.obterTipos();
 
     const editar = (id) => {
-        console.log('edit',id);
+        navigate(`/cadastro-lancamento/${id}`);
     }
 
     const excluir = () => {
@@ -90,6 +96,27 @@ const ConsultaLancamentos = () => {
             </div>
         );
     }
+
+    const preparaFormularioCadastro = () => {
+        navigate('/cadastro-lancamento');
+    }
+
+    const alterarStatus = (lancamento, status) => {
+        lancamentoService.alterarStatus(lancamento.id, status)
+            .then(resp => {
+                const lancamentosAtualizado = lancamentos;
+                const index = lancamentosAtualizado.indexOf(lancamento);
+                if (index !== -1) {
+                    lancamento['status'] = status;
+                    lancamentosAtualizado[index] = lancamento;
+                    setLancamentos(lancamentosAtualizado);
+                }
+
+                consultar();
+
+                messages.mensagemSucesso('Status atualizado com sucesso');
+            });
+    }
     
   return (
     <Card title='Consulta Lançamentos'>
@@ -100,7 +127,7 @@ const ConsultaLancamentos = () => {
                         id='ano'
                         label='Ano: *'
                         value={ano}
-                        change={e => setAno(e.target.value)}
+                        onChange={e => setAno(e.target.value)}
                         placeholder='Digite o ano'
                         type='text'
                     />
@@ -108,14 +135,14 @@ const ConsultaLancamentos = () => {
                         id='mes'
                         label='Mes: '
                         value={mes}
-                        change={e => setMes(e.target.value)}
+                        onChange={e => setMes(e.target.value)}
                         lista={meses}
                     />
                     <Form 
                         id='descricao'
                         label='Descricao: '
                         value={descricao}
-                        change={e => setDescricao(e.target.value)}
+                        onChange={e => setDescricao(e.target.value)}
                         placeholder='Digite uma descricao'
                         type='text'
                     />
@@ -123,19 +150,22 @@ const ConsultaLancamentos = () => {
                         id='tipo'
                         label='Tipo: '
                         value={tipo}
-                        change={e => setTipo(e.target.value)}
+                        onChange={e => setTipo(e.target.value)}
                         lista={tipos}
                     />
                     <Button 
-                        label='Buscar'
+                        label=' Buscar'
                         onClick={consultar}
                         style={{marginTop: 5, marginRight: 5}}
                         className='p-button-success'
+                        icon='pi pi-search'
                     />
                     <Button 
-                        label='Cadastra'
+                        label=' Cadastra'
                         style={{marginTop: 5, marginRight: 5}}
                         className='p-button-danger'
+                        onClick={preparaFormularioCadastro}
+                        icon='pi pi-plus'
                     />
                 </div>
             </div>
@@ -147,6 +177,7 @@ const ConsultaLancamentos = () => {
                     lancamentos={lancamentos}
                     deleteAction={confirmeExclusao}
                     editAction={editar}
+                    alterarStatus={alterarStatus}
                 />
             </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../components/button';
+import { Button } from 'primereact/button';
 import UsuarioService from '../app/service/usuarioService';
 import LocalStorageservice from '../app/service/localStorageService';
 
@@ -20,8 +20,10 @@ const Home = () => {
 
     const buscarSaldo = () => {
         const loggedUser = LocalStorageservice.obtemItem('usuario_logado');
+        console.log('usuario',loggedUser.id);
         service.obterSaldoPorUsuario(loggedUser.id).then(resp => {
                 setSaldo(resp.data);
+                console.log(resp.data);
             }).catch(erro => {
                 console.log(erro.response);
             })
@@ -29,6 +31,7 @@ const Home = () => {
 
     useEffect(() => {
         buscarSaldo();
+        console.log('saldo: ', saldo);
     });
 
   return (
@@ -40,20 +43,21 @@ const Home = () => {
         <p>E essa é sua área administrativa, utilize um dos menus ou botões abaixo para navegar pelo sistema.</p>
         <p className="lead">
         <Button 
-            type='primary btn-lg'
             label='Cadastrar Usuário'
+            style={{marginTop: 5, marginRight: 5}}
+            className='p-button-success'
             click={cadastrosUsuario}
-            icon='users'
+            icon='pi pi-user'
         />
         <Button 
-            type='danger btn-lg'
             label='Cadastrar Lançamento'
-            click={cadastroLancamento}
-            icon='users'
+            className='p-button-danger'
+            onClick={cadastroLancamento}
+            icon="pi pi-dollar"
         />
         </p>
     </div>
   )
 }
 
-export default Home
+export default Home;

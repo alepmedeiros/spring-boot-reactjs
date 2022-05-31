@@ -10,9 +10,7 @@ const SelectMenu = (props) => {
     <div className='form-group' style={{paddingBottom: 5}}>
         <label htmlFor={props.id}>{props.label}</label>
         <select className="form-control" 
-          id={props.id} 
-          value={props.value} 
-          onChange={props.change}>
+          {...props}>
             {options}
         </select>
     </div>

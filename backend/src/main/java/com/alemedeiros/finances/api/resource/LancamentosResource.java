@@ -113,6 +113,30 @@ public class LancamentosResource {
         return ResponseEntity.ok(lancamentos);
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<?> obterLancamento(@PathVariable("id") Long id){
+        return service.obterPorId(id)
+            .map(lancamento -> extracted(lancamento))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    private ResponseEntity<?> extracted(Lancamentos lancamento) {
+        return new ResponseEntity<>(converter(lancamento), HttpStatus.OK);
+    }
+
+    private LancamentoDTO converter(Lancamentos lancamentos){
+        return LancamentoDTO.builder()
+            .id(lancamentos.getId())
+            .descricao(lancamentos.getDescricao())
+            .ano(lancamentos.getAno())
+            .mes(lancamentos.getMes())
+            .valor(lancamentos.getValor())
+            .tipo(lancamentos.getTipo().name())
+            .status(lancamentos.getStatus().name())
+            .usuario(lancamentos.getUsuario().getId())
+            .build();
+    }
+
     private Lancamentos converter(LancamentoDTO dto) {
         Usuario usuario = usuarioService.obterPorId(dto.getUsuario()).orElseThrow(
             () -> new RegraNegocioException("Usuário não encontrado para o Id informado."));

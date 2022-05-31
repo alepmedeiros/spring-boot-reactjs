@@ -1,6 +1,6 @@
 import React from 'react'
 import currencyFormatter from 'currency-formatter';
-import { Button } from '../../components/button';
+import { Button } from 'primereact/button';
 
 const LancamentosTable = (props) => {
     const rows = props.lancamentos.map(lancamento => {
@@ -13,14 +13,33 @@ const LancamentosTable = (props) => {
                 <td>{lancamento.status}</td>
                 <td>
                     <Button 
-                        type='primary'
-                        icon='edit'
-                        click={e => props.editAction(lancamento.id)}
+                        title='Efetivar'
+                        disabled={lancamento.status !== 'PENDENTE'}
+                        className='p-button-success'
+                        icon='pi pi-check'
+                        style={{marginTop: 5, marginRight: 5}}
+                        onClick={e => props.alterarStatus(lancamento, 'EFETIVADO')}
+                    />
+                    <Button 
+                        title='Cancelar'
+                        disabled={lancamento.status !== 'PENDENTE'}
+                        className='p-button-secondary'
+                        icon='pi pi-ban'
+                        style={{marginTop: 5, marginRight: 5}}
+                        onClick={e => props.alterarStatus(lancamento, 'CANCELADO')}
+                    />
+                    <Button 
+                        title='Editar'
+                        icon='pi pi-pencil'
+                        style={{marginTop: 5, marginRight: 5}}
+                        onClick={e => props.editAction(lancamento.id)}
                     />  
                     <Button 
-                        type='danger'
-                        icon='trash'
-                        click={e => props.deleteAction(lancamento)}
+                        title='Excluir'
+                        className="p-button-danger"
+                        style={{marginTop: 5, marginRight: 5}}
+                        icon='pi pi-trash'
+                        onClick={e => props.deleteAction(lancamento)}
                     />
                 </td>
             </tr>
